@@ -37,6 +37,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using AutomationOfPostprocessing.Services.FileSystem;
 using NXOpen;
 using NXOpen.BlockStyler;
 using NXOpen.Features;
@@ -49,6 +50,7 @@ public class PostprocessDialog
     //class members
     private static Session theSession = null;
     private static UI theUI = null;
+    private static PostprocessorLoader postprocessorLoader = null;
     private static BlockDialog theDialog;
     private NXOpen.BlockStyler.Group group1;// Block type: Group
     private ListBox list_box0;// Block type: List Box
@@ -66,6 +68,7 @@ public class PostprocessDialog
         {
             theSession = session;
             theUI = ui;
+            postprocessorLoader = new PostprocessorLoader();
             //theDlxFileName = "patroN.dlx";
             //theDlxFileName = Path.Combine(Environment.GetEnvironmentVariable("UGII_USER_DIR"),
             //              "patroN.dlx");
@@ -252,7 +255,8 @@ public class PostprocessDialog
         {
             //---- Enter your callback code here -----
             list_box0.SetListItems(new string[0]);
-            var posts = GetRegisteredPostprocessors().ToArray();
+            //var posts = GetRegisteredPostprocessors().ToArray();
+            var posts = postprocessorLoader.GetAvailablePostprocessors().ToArray();
 
             if (posts.Length == 0)
             {
@@ -392,55 +396,49 @@ public class PostprocessDialog
         return plist;
     }
 
-    public List<string> GetRegisteredPostprocessors()
-    {
-        var registeredPosts = new List<string>();
+    //public List<string> GetRegisteredPostprocessors()
+    //{
+    //    var registeredPosts = new List<string>();
 
-        try
-        {
-            string ugiiCamDir = Environment.GetEnvironmentVariable("UGII_CAM_POST_DIR");
-            string configPath = Path.Combine(ugiiCamDir, "template_post.dat");
+    //    try
+    //    {
+    //        string ugiiCamDir = Environment.GetEnvironmentVariable("UGII_CAM_POST_DIR");
+    //        string configPath = Path.Combine(ugiiCamDir, "template_post.dat");
 
-            if (!File.Exists(configPath))
-            {
-                theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, "Файл конфигурации не найден");
-                return registeredPosts;
-            }
+    //        if (!File.Exists(configPath))
+    //        {
+    //            theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, "Файл конфигурации не найден");
+    //            return registeredPosts;
+    //        }
 
-            string[] lines = File.ReadAllLines(configPath);
+    //        string[] lines = File.ReadAllLines(configPath);
 
-            foreach (string line in lines)
-            {
-                if (string.IsNullOrWhiteSpace(line) || line.Trim().StartsWith("#"))
-                    continue;
+    //        foreach (string line in lines)
+    //        {
+    //            if (string.IsNullOrWhiteSpace(line) || line.Trim().StartsWith("#"))
+    //                continue;
 
-                string[] parts = line.Split(',');
-                if (parts.Length > 0)
-                {
-                    string postName = parts[0];
+    //            string[] parts = line.Split(',');
+    //            if (parts.Length > 0)
+    //            {
+    //                string postName = parts[0];
 
-                    if (!postName.StartsWith("#"))
-                    {
-                        registeredPosts.Add(postName);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, $"Ошибка чтения конфигурации: {ex.Message}");
-        }
+    //                if (!postName.StartsWith("#"))
+    //                {
+    //                    registeredPosts.Add(postName);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, $"Ошибка чтения конфигурации: {ex.Message}");
+    //    }
 
-        return registeredPosts;
-    }
+    //    return registeredPosts;
+    //}
 
-    public string GetSelectedPostprocessor()
-    {
-        return postName;
-    }
+    public string GetSelectedPostprocessor() => postName;
 
-    public string GetOutputDirectory()
-    {
-        return outputDir;
-    }
+    public string GetOutputDirectory() => outputDir;
 }
