@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing
 {
-    public class CAMProcessor
+    public class ParentGroupSupplier
     {
         private readonly Session _session;
         private readonly NXOpen.UI _ui;
         private readonly NXLogger _logger;
 
-        public CAMProcessor(Session session, NXLogger logger, NXOpen.UI ui)
+        public ParentGroupSupplier(Session session, NXLogger logger, NXOpen.UI ui)
         {
             _session = session;
             _ui = ui;
@@ -30,7 +30,7 @@ namespace AutomationOfPostprocessing
                 int selectedCount = _ui.SelectionManager.GetNumSelectedObjects();
                 if (selectedCount == 0)
                 {
-                    _logger.Log("Нет выбранных объектов");
+                    _logger.LogWarning("Нет выбранных объектов");
                     return null;
                 }
 
@@ -57,12 +57,12 @@ namespace AutomationOfPostprocessing
 
                 if (groupCount == 0)
                 {
-                    _logger.Log("Среди выбранных объектов нет CAM групп");
+                    _logger.LogWarning("Среди выбранных объектов нет CAM групп");
                     return null;
                 }
                 else if (groupCount > 1)
                 {
-                    _logger.Log("Выбрано более одной CAM группы. Пожалуйста, выберите только одну группу.");
+                    _logger.LogWarning("Выбрано более одной CAM группы. Пожалуйста, выберите только одну группу.");
                     return null;
                 }
 
@@ -75,19 +75,19 @@ namespace AutomationOfPostprocessing
             }
         }
 
-        public NCGroup FindParentGroup(string groupName)
-        {
-            foreach (NCGroup group in _session.Parts.Work.CAMSetup.CAMGroupCollection)
-            {
-                if (group.Name == groupName)
-                {
-                    return group;
-                }
-            }
+        //public NCGroup FindParentGroup(string groupName)
+        //{
+        //    foreach (NCGroup group in _session.Parts.Work.CAMSetup.CAMGroupCollection)
+        //    {
+        //        if (group.Name == groupName)
+        //        {
+        //            return group;
+        //        }
+        //    }
 
-            _logger.Log($"Группа {groupName} не найдена");
-            return null;
-        }
+        //    _logger.Log($"Группа {groupName} не найдена");
+        //    return null;
+        //}
     }
 }
 

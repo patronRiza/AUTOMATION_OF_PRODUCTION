@@ -12,12 +12,12 @@ namespace AutomationOfPostprocessing
     public class PostprocessConfigurator
     {
         private readonly PostprocessDialog _dialog;
-        private readonly IUserNotifier _notifier;
+        private readonly NXLogger _logger;
 
-        public PostprocessConfigurator(NXOpen.UI ui, IUserNotifier notifier, Session session)
+        public PostprocessConfigurator(NXOpen.UI ui, NXLogger logger, Session session)
         {
             _dialog = new PostprocessDialog(session, ui);
-            _notifier = notifier;
+            _logger = logger;
         }
 
         public (bool Success, string PostName, string OutputDir) Configure()
@@ -27,13 +27,13 @@ namespace AutomationOfPostprocessing
                 var result = _dialog.Launch();
                 if (result != BlockDialog.DialogResponse.Ok)
                 {
-                    _notifier.ShowInfo("Постпроцессинг отменён пользователем");
+                    _logger.LogInfo("Постпроцессинг отменён пользователем");
                     return (false, null, null);
                 }
 
                 if (string.IsNullOrEmpty(_dialog.GetSelectedPostprocessor()))
                 {
-                    _notifier.ShowError("Постпроцессор не выбран");
+                    _logger.LogWarning("Постпроцессор не выбран");
                     return (false, null, null);
                 }
 
@@ -41,7 +41,7 @@ namespace AutomationOfPostprocessing
             }
             catch (Exception ex)
             {
-                _notifier.ShowError($"Ошибка конфигурации: {ex.Message}");
+                _logger.LogError(ex);
                 return (false, null, null);
             }
         }

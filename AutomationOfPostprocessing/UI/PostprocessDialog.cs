@@ -37,6 +37,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using AutomationOfPostprocessing;
 using AutomationOfPostprocessing.Services.FileSystem;
 using NXOpen;
 using NXOpen.BlockStyler;
@@ -52,6 +53,7 @@ public class PostprocessDialog
     private static UI theUI = null;
     private static PostprocessorLoader postprocessorLoader = null;
     private static BlockDialog theDialog;
+    private static NXLogger _logger;
     private NXOpen.BlockStyler.Group group1;// Block type: Group
     private ListBox list_box0;// Block type: List Box
     private NXOpen.BlockStyler.Group group;// Block type: Group
@@ -84,6 +86,7 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
+            _logger.LogError(ex);
             throw ex;
         }
     }
@@ -125,7 +128,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
@@ -192,7 +196,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return dialogResponse;
     }
@@ -240,7 +245,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
 
@@ -260,8 +266,8 @@ public class PostprocessDialog
 
             if (posts.Length == 0)
             {
-                theUI.NXMessageBox.Show("Инфо", NXMessageBox.DialogType.Information,
-                                       "Нет установленных постпроцессоров");
+                _logger.LogInfo("Нет установленных постпроцессоров");
+                //theUI.NXMessageBox.Show("Инфо", NXMessageBox.DialogType.Information, "Нет установленных постпроцессоров");
                 return;
             }
 
@@ -272,7 +278,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
 
@@ -289,8 +296,8 @@ public class PostprocessDialog
 
             if (selectedIndices.Length == 0)
             {
-                theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error,
-                                       "Не выбран постпроцессор!");
+                _logger.LogWarning("Не выбран постпроцессор!");
+                //theUI.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, "Не выбран постпроцессор!");
                 return 1;
             }
 
@@ -302,7 +309,8 @@ public class PostprocessDialog
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -332,7 +340,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -352,7 +361,8 @@ public class PostprocessDialog
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -391,7 +401,8 @@ public class PostprocessDialog
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            _logger.LogError(ex);
+            //theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return plist;
     }

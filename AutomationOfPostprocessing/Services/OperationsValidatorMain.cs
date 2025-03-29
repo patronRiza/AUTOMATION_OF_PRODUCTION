@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing
 {
-    public class OperationProcessor
+    public class OperationsValidatorMain
     {
         public ProcessingResult Process(Operation op)
         {

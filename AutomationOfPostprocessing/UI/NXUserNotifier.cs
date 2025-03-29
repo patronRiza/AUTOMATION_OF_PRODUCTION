@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing.UI.Notifiers
 {
-    public interface IUserNotifier
-    {
-        void ShowInfo(string message);
-        void ShowWarning(string message);
-        void ShowError(string message);
-    }
     public class NXUserNotifier : IUserNotifier
     {
         private readonly NXOpen.UI _ui;
