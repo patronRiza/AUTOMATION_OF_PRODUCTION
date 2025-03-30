@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing
 {
@@ -11,6 +8,7 @@ namespace AutomationOfPostprocessing
         public bool IsSuccess { get; private set; }
         public string Message { get; private set; }
         public Exception Error { get; private set; }
+        public Dictionary<string, object> AdditionalInfo { get; } = new Dictionary<string, object>();
 
         private ProcessingResult() { }
 
@@ -27,6 +25,12 @@ namespace AutomationOfPostprocessing
         public static ProcessingResult Failed(Exception ex)
         {
             return new ProcessingResult { Error = ex };
+        }
+
+        public ProcessingResult WithAdditionalInfo(string key, object value)
+        {
+            AdditionalInfo[key] = value;
+            return this;
         }
     }
 }

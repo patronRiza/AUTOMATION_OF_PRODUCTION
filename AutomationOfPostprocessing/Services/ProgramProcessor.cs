@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using NXOpen.CAM;
 using Operation = NXOpen.CAM.Operation;
 using System.IO;
+using NXOpen.Gateway;
 
 namespace AutomationOfPostprocessing.Services.CAM
 {
@@ -35,31 +36,17 @@ namespace AutomationOfPostprocessing.Services.CAM
 
                 try
                 {
-                    //bool allComplete = true;
-                    //foreach (Operation op in operations)
-                    //{
-                    //    if (op == null)
-                    //    {
-                    //        _session.ListingWindow.WriteLine("Предупреждение: Обнаружена пустая операция");
-                    //        continue;
-                    //    }
+                    bool allValid = operations.All(op =>
+                    {
+                        var result = OperationValidator.ValidateBefore(op as Operation);
 
-                    //    var status = op.GetStatus();
-                    //    if (status == CAMObject.Status.Regen)
-                    //    {
-                    //        _session.ListingWindow.WriteLine("Внимание: Операция " + op.Name + " не была успешно рассчитана(статус: " + status + ")");
-                    //        allComplete = false;
-                    //    }
-                    //}
+                        if (!result.IsSuccess && result.Message != null)
+                            _session.ListingWindow.WriteLine(result.Message);
 
-                    //if (!allComplete)
-                    //{
-                    //    _session.ListingWindow.WriteLine("Пропуск программы: не все операции рассчитаны");
-                    //    continue;
-                    //}
+                        return result.IsSuccess;
+                    });
 
-                    bool allComplete = OperationValidator.ValidateBefore(_session, operations);
-                    if (!allComplete)
+                    if (!allValid)
                     {
                         _session.ListingWindow.WriteLine("Пропуск программы: не все операции рассчитаны");
                         continue;
@@ -73,18 +60,15 @@ namespace AutomationOfPostprocessing.Services.CAM
                                                                             CAMSetup.PostprocessSettingsReviewTool.PostDefined,
                                                                             CAMSetup.PostprocessSettingsPostMode.Normal);
 
-                    OperationValidator.ValidateAfter(_session, outputFile);
-
-                    //if (File.Exists(outputFile))
-                    //{
-                    //    var fileInfo = new FileInfo(outputFile);
-                    //    _session.ListingWindow.WriteLine("УП успешно сохранен в: " + outputFile);
-                    //    _session.ListingWindow.WriteLine("Размер файла: " + fileInfo.Length + " байт");
-                    //}
-                    //else
-                    //{
-                    //    _session.ListingWindow.WriteLine("Ошибка: Файл УП не был создан");
-                    //}
+                    var validationResult = OperationValidator.ValidateAfter(outputFile);
+                    if (validationResult.IsSuccess)
+                    {
+                        _session.ListingWindow.WriteLine("УП успешно сохранен в: " + outputFile);
+                        _session.ListingWindow.WriteLine($"Размер файла: {validationResult.AdditionalInfo["OutputFileSize"]} байт");
+                    }
+                    else
+                        _session.ListingWindow.WriteLine(validationResult.Error.Message);
+                    
                 }
                 catch (Exception ex)
                 {

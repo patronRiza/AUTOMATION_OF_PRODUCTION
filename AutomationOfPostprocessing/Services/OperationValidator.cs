@@ -1,14 +1,6 @@
-﻿
-using NXOpen;
-using NXOpen.CAE.AeroStructures.Author;
-using NXOpen.CAM;
-using NXOpen.UF;
+﻿using NXOpen.CAM;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Operation = NXOpen.CAM.Operation;
 
 namespace AutomationOfPostprocessing.Services.CAM
@@ -17,55 +9,80 @@ namespace AutomationOfPostprocessing.Services.CAM
     {
         private OperationValidator() {}
 
-        public static bool ValidateBefore(Session session, CAMObject[] operations)
+        //public static bool ValidateBefore(Session session, CAMObject[] operations)
+        //{
+        //    //if (op == null)
+        //    //{
+        //    //    _logger.LogWarning("Обнаружена пустая операция");
+        //    //    return false;
+        //    //}
+
+        //    //var status = op.GetStatus();
+        //    //if (status == CAMObject.Status.Regen)
+        //    //{
+        //    //    _logger.LogWarning($"Операция {op.Name} не готова (статус: {status})");
+        //    //    return false;
+        //    //}
+
+        //    //return true;
+
+        //    bool allComplete = true;
+        //    foreach (Operation op in operations)
+        //    {
+
+        //        if (op == null)
+        //        {
+
+        //            session.ListingWindow.WriteLine($"Предупреждение: {op.Name} пустая операция");
+        //            continue;
+        //        }
+
+        //        var status = op.GetStatus();
+        //        if (status == CAMObject.Status.Regen)
+        //        {
+        //            session.ListingWindow.WriteLine($"Внимание: Операция {op.Name} не была успешно рассчитана(статус: {status})");
+        //            allComplete = false;
+        //        }
+        //    }
+
+        //    return allComplete;
+        //}
+
+        public static ProcessingResult ValidateBefore(Operation operation)
         {
-            //if (op == null)
-            //{
-            //    _logger.LogWarning("Обнаружена пустая операция");
-            //    return false;
-            //}
+            if (operation == null)
+                return ProcessingResult.Skipped("Предупреждение: Обнаружена пустая операция");
+            
 
-            //var status = op.GetStatus();
-            //if (status == CAMObject.Status.Regen)
-            //{
-            //    _logger.LogWarning($"Операция {op.Name} не готова (статус: {status})");
-            //    return false;
-            //}
-
-            //return true;
-
-            bool allComplete = true;
-            foreach (Operation op in operations)
+            try
             {
-                
-                if (op == null)
-                {
-                    session.ListingWindow.WriteLine($"Предупреждение: {op.Name} пустая операция");
-                    continue;
-                }
-
-                var status = op.GetStatus();
+                var status = operation.GetStatus();
                 if (status == CAMObject.Status.Regen)
-                {
-                    session.ListingWindow.WriteLine($"Внимание: Операция {op.Name} не была успешно рассчитана(статус: {status})");
-                    allComplete = false;
-                }
-            }
+                    return ProcessingResult.Skipped($"Внимание: Операция {operation.Name} не была успешно рассчитана(статус: {status})");
 
-            return allComplete;
+                return ProcessingResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return ProcessingResult.Failed(ex);
+            }
         }
 
-        public static void ValidateAfter(Session session, string outputFile)
+        public static ProcessingResult ValidateAfter(string outputFile)
         {
-            if (File.Exists(outputFile))
+            try
             {
+                if (!File.Exists(outputFile))
+                    return ProcessingResult.Failed(new FileNotFoundException($"Файл УП {outputFile} не был создан"));
+
                 var fileInfo = new FileInfo(outputFile);
-                session.ListingWindow.WriteLine("УП успешно сохранен в: " + outputFile);
-                session.ListingWindow.WriteLine("Размер файла: " + fileInfo.Length + " байт");
+                return ProcessingResult.Success()
+                    .WithAdditionalInfo("OutputFileSize", fileInfo.Length)
+                    .WithAdditionalInfo("OutputFile", fileInfo);
             }
-            else
+            catch(Exception ex)
             {
-                session.ListingWindow.WriteLine($"Ошибка: Файл УП {outputFile} не был создан");
+                return ProcessingResult.Failed(ex);
             }
         }
     }
