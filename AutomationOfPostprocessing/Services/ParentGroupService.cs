@@ -1,12 +1,6 @@
-﻿using AutomationOfPostprocessing;
-using NXOpen;
-using NXOpen.CAE;
+﻿using NXOpen;
 using NXOpen.CAM;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing
 {
@@ -30,7 +24,7 @@ namespace AutomationOfPostprocessing
                 int selectedCount = _ui.SelectionManager.GetNumSelectedObjects();
                 if (selectedCount == 0)
                 {
-                    _logger.LogWarning("Нет выбранных объектов");
+                    _logger.LogWarning("Вы не выбрали установ");
                     return null;
                 }
 
@@ -55,14 +49,9 @@ namespace AutomationOfPostprocessing
                     }
                 }
 
-                if (groupCount == 0)
+                if (groupCount > 1)
                 {
-                    _logger.LogWarning("Среди выбранных объектов нет CAM групп");
-                    return null;
-                }
-                else if (groupCount > 1)
-                {
-                    _logger.LogWarning("Выбрано более одной CAM группы. Пожалуйста, выберите только одну группу.");
+                    _logger.LogWarning("Выбрано более одного установа. Пожалуйста, выберите только одну группу.");
                     return null;
                 }
 

@@ -2,13 +2,7 @@
 using AutomationOfPostprocessing.UI;
 using AutomationOfPostprocessing.UI.Notifiers;
 using NXOpen;
-using NXOpen.UF;
-using NXOpen.Validate;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing.Services
 {

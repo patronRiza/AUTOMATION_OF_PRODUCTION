@@ -1,14 +1,9 @@
 ﻿using NXOpen;
-using AutomationOfPostprocessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NXOpen.CAM;
 using Operation = NXOpen.CAM.Operation;
-using System.IO;
-using NXOpen.Gateway;
 
 namespace AutomationOfPostprocessing.Services.CAM
 {

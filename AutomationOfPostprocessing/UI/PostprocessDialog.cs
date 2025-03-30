@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using AutomationOfPostprocessing;
+﻿using AutomationOfPostprocessing;
 using AutomationOfPostprocessing.Services.FileSystem;
 using NXOpen;
 using NXOpen.BlockStyler;
+using System;
+using System.IO;
 
 public class PostprocessDialog
 {

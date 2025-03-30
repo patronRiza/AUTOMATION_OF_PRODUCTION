@@ -1,11 +1,6 @@
-﻿using NXOpen.BlockStyler;
-using NXOpen;
+﻿using NXOpen;
+using NXOpen.BlockStyler;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutomationOfPostprocessing.UI.Notifiers;
 
 namespace AutomationOfPostprocessing
 {
