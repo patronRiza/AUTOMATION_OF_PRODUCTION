@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace AutomationOfPostprocessing
 {
-    public class ParentGroupSupplier
+    public class ParentGroupService
     {
         private readonly Session _session;
         private readonly NXOpen.UI _ui;
         private readonly NXLogger _logger;
 
-        public ParentGroupSupplier(Session session, NXLogger logger, NXOpen.UI ui)
+        public ParentGroupService(Session session, NXLogger logger, NXOpen.UI ui)
         {
             _session = session;
             _ui = ui;
@@ -74,20 +74,6 @@ namespace AutomationOfPostprocessing
                 return null;
             }
         }
-
-        //public NCGroup FindParentGroup(string groupName)
-        //{
-        //    foreach (NCGroup group in _session.Parts.Work.CAMSetup.CAMGroupCollection)
-        //    {
-        //        if (group.Name == groupName)
-        //        {
-        //            return group;
-        //        }
-        //    }
-
-        //    _logger.Log($"Группа {groupName} не найдена");
-        //    return null;
-        //}
     }
 }
 

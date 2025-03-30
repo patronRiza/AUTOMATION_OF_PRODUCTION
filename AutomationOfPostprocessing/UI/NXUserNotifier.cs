@@ -13,17 +13,17 @@ namespace AutomationOfPostprocessing.UI.Notifiers
 
         public NXUserNotifier(NXOpen.UI ui) => _ui = ui;
 
-        public void ShowError(string message)
+        public void ShowInfo(string message)
         {
             _ui.NXMessageBox.Show("Информация", NXMessageBox.DialogType.Information, message);
         }
 
-        public void ShowInfo(string message)
+        public void ShowWarning(string message)
         {
             _ui.NXMessageBox.Show("Предупреждение", NXMessageBox.DialogType.Warning, message);
         }
 
-        public void ShowWarning(string message)
+        public void ShowError(string message)
         {
             _ui.NXMessageBox.Show("Ошибка", NXMessageBox.DialogType.Error, message);
         }

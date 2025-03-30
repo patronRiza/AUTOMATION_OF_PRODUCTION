@@ -62,15 +62,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomatisationProcess.cs" />
-    <Compile Include="Suppliers\ProgramsSupplier.cs" />
+    <Compile Include="Services\ComponentInitializer.cs" />
     <Compile Include="UI\Interfaces\IUserNotifier.cs" />
-    <Compile Include="Utils\CAMGroupHelper.cs" />
-    <Compile Include="Suppliers\ParentGroupSupplier.cs" />
-    <Compile Include="Services\OperationValidator.cs" />
-    <Compile Include="Services\ProgramProcessor.cs" />
-    <Compile Include="Utils\PostprocessorLoader.cs" />
+    <Compile Include="Services\ParentGroupService.cs" />
+    <Compile Include="Utils\CAMValidator.cs" />
+    <Compile Include="Services\ProgramService.cs" />
+    <Compile Include="Services\PostprocessorService.cs" />
+    <Compile Include="Utils\DataValidator.cs" />
     <Compile Include="Utils\NXLogger.cs" />
-    <Compile Include="Services\OperationsValidatorMain.cs" />
     <Compile Include="Utils\OutputManager.cs" />
     <Compile Include="UI\PostprocessConfigurator.cs" />
     <Compile Include="UI\PostprocessDialog.cs" />

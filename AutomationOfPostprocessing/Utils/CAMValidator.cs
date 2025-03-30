@@ -5,48 +5,9 @@ using Operation = NXOpen.CAM.Operation;
 
 namespace AutomationOfPostprocessing.Services.CAM
 {
-    public class OperationValidator
+    public class CAMValidator
     {
-        private OperationValidator() {}
-
-        //public static bool ValidateBefore(Session session, CAMObject[] operations)
-        //{
-        //    //if (op == null)
-        //    //{
-        //    //    _logger.LogWarning("Обнаружена пустая операция");
-        //    //    return false;
-        //    //}
-
-        //    //var status = op.GetStatus();
-        //    //if (status == CAMObject.Status.Regen)
-        //    //{
-        //    //    _logger.LogWarning($"Операция {op.Name} не готова (статус: {status})");
-        //    //    return false;
-        //    //}
-
-        //    //return true;
-
-        //    bool allComplete = true;
-        //    foreach (Operation op in operations)
-        //    {
-
-        //        if (op == null)
-        //        {
-
-        //            session.ListingWindow.WriteLine($"Предупреждение: {op.Name} пустая операция");
-        //            continue;
-        //        }
-
-        //        var status = op.GetStatus();
-        //        if (status == CAMObject.Status.Regen)
-        //        {
-        //            session.ListingWindow.WriteLine($"Внимание: Операция {op.Name} не была успешно рассчитана(статус: {status})");
-        //            allComplete = false;
-        //        }
-        //    }
-
-        //    return allComplete;
-        //}
+        private CAMValidator() {}
 
         public static ProcessingResult ValidateBefore(Operation operation)
         {

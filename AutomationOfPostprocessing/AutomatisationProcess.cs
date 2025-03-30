@@ -1,7 +1,9 @@
-﻿using AutomationOfPostprocessing.Services.CAM;
-using AutomationOfPostprocessing.Suppliers;
+﻿using AutomationOfPostprocessing.Services;
+using AutomationOfPostprocessing.Services.CAM;
+using AutomationOfPostprocessing.Services.FileSystem;
 using AutomationOfPostprocessing.UI;
 using AutomationOfPostprocessing.UI.Notifiers;
+using AutomationOfPostprocessing.Utils;
 using NXOpen;
 using NXOpen.CAM;
 using System;
@@ -11,14 +13,15 @@ namespace AutomationOfPostprocessing
     public class AutomatisationProcess
     {
         public static AutomatisationProcess _theProgram;
-        private static Session _session;
-        private static NXOpen.UI _ui;
-        private static IUserNotifier _notifier;
-        private static NXLogger _logger;
-        private static ParentGroupSupplier _parentGroupSupplier;
-        private static PostprocessConfigurator _postprocessConfigurator;
-        private static ProgramsSupplier _programsSupplier;
-        private static ProgramProcessor _programProcessor;
+        //private static Session _session;
+        //private static NXOpen.UI _ui;
+        //private static IUserNotifier _notifier;
+        //private static NXLogger _logger;
+        //private static ParentGroupService _parentGroupService;
+        //private static ProgramService _programService;
+        //private static PostprocessConfigurator _postprocessConfigurator;
+        private static ComponentInitializer _initializer;
+        private static DataValidator _validator;
         public static bool isDisposeCalled;
      
 
@@ -26,24 +29,32 @@ namespace AutomationOfPostprocessing
         {
             try
             {
-                _session = Session.GetSession();
-                _ui = NXOpen.UI.GetUI();
-                _notifier = new NXUserNotifier(_ui);
-                _logger = new NXLogger(_notifier);
-                _parentGroupSupplier = new ParentGroupSupplier(_session, _logger, _ui);
-                _postprocessConfigurator = new PostprocessConfigurator(_ui, _logger, _session);
-                _programsSupplier = new ProgramsSupplier(_session);
-                _programProcessor = new ProgramProcessor(_session, _logger);
+                //_session = Session.GetSession();
+                //_ui = NXOpen.UI.GetUI();
+                //_notifier = new NXUserNotifier(_ui);
+                //_logger = new NXLogger(_notifier);
+                //_parentGroupService = new ParentGroupService(_session, _logger, _ui);
+                //_programService = new ProgramService(_session, _logger);
+                //_postprocessConfigurator = new PostprocessConfigurator(_ui, _logger, _session);
+                _initializer = new ComponentInitializer();
+                _validator = new DataValidator(_initializer.Logger);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex);
+                _initializer.Logger.LogError(ex);
             }
         }
 
         public static void Main(string[] args)
         {
-            AutomatisationProcess.Run();
+            try
+            {
+                AutomatisationProcess.Run();
+            }
+            catch(Exception ex)
+            {
+                _initializer.Logger.LogError(ex);
+            }
         }
 
         private static void Run()
@@ -52,122 +63,26 @@ namespace AutomationOfPostprocessing
             {
                 _theProgram = new AutomatisationProcess();
 
-                var selectedParentGroup = _parentGroupSupplier.GetSelectGroup();
-                ValidateParentGroup(selectedParentGroup);
+                var selectedParentGroup = _initializer.ParentGroupService.GetSelectGroup();
+                _validator.ValidateParentGroup(selectedParentGroup);
 
-                var (success, postName, outputDir) = _postprocessConfigurator.Configure();
-                ValidatePostprocessConfigurator(success);
+                var (success, postName, extention, outputDir) = _initializer.PostprocessConfigurator.Configure();
+                _validator.ValidatePostprocessConfigurator(success);
 
-                var programData = _programsSupplier.CollectProgramData(selectedParentGroup);
+                var programData = _initializer.ProgramService.CollectProgramData(selectedParentGroup);
 
-                _programProcessor.ProcessPrograms(programData, outputDir, postName);
+                _initializer.ProgramService.ProcessPrograms(programData, outputDir, postName, extention);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex);
+                _initializer.Logger.LogError(ex);
+                throw new ApplicationException("Ошибка выполнения процесса автоматизации", ex);
             }
             finally
             {
                 _theProgram = null;
             }
         }
-
-        private static void ValidateParentGroup(NCGroup workPart)
-        {
-            if (workPart == null)
-                throw new InvalidOperationException("Нет открытой рабочей части");
-        }
-
-        private static void ValidatePostprocessConfigurator(bool success)
-        {
-            if (!success)
-                throw new InvalidOperationException("Нет доступных программ");
-        }
-
-        //public static void Main(string[] args)
-        //{
-        //    try
-        //    {
-        //        theProgram = new AutomatisationProcess();
-
-        //        Part workPart = theSession.Parts.Work;
-        //        CAMSetup camSetup = workPart.CAMSetup;
-        //        ListingWindow lw = theSession.ListingWindow;
-        //        lw.Open();
-
-        //        string parentGroupName = GetSelectedGroupFromNX(workPart, camSetup);
-
-        //        if(parentGroupName == null) 
-        //        {
-        //            return;
-        //        }
-
-        //        //string postDir = Environment.GetEnvironmentVariable("UGII_CAM_POST_DIR");
-        //        string outputDirectory = Environment.GetEnvironmentVariable("UGII_RESULT_DIR");
-        //        string postName = "MILL_3_AXIS";
-
-
-
-        //        var postDialog = new PostprocessDialog(theSession, theUI);
-        //        var response = postDialog.Launch();
-
-        //        if (response == BlockDialog.DialogResponse.Cancel)
-        //        {
-        //            return;
-        //        }
-        //        else if (response == BlockDialog.DialogResponse.Ok)
-        //        {
-        //            postName = postDialog.GetSelectedPostprocessor();
-        //            outputDirectory = postDialog.GetOutputDirectory();
-        //        }
-        //        else
-        //        {
-        //            lw.WriteLine("Неизвестный ответ диалога: " + response);
-        //            return;
-        //        }
-
-        //        NCGroup parentGroup = FindParentGroup(camSetup, parentGroupName, lw);
-
-        //        if (parentGroup == null)
-        //        {
-        //            lw.WriteLine("Программа остановлена: не выбрана группа.");
-        //            return;
-        //        }
-
-
-        //        lw.WriteLine("Программы принадлежащие " + parentGroupName);
-
-        //        var programData = CollectProgramData(camSetup, parentGroup, lw);
-
-        //        //foreach (var program in programData)
-        //        //{
-        //        //    lw.WriteLine(program.Key + " - " + string.Join(", ", program.Value));
-        //        //}
-
-        //        ProcessPrograms(workPart, programData, outputDirectory, postName, lw);
-        //    }
-        //    catch (NXException e)
-        //    {
-        //        UI.GetUI().NXMessageBox.Show("Message", NXMessageBox.DialogType.Error, e.Message);
-        //    }
-
-        //}
-
-        //public void Dispose()
-        //{
-        //    try
-        //    {
-        //        if (isDisposeCalled == false)
-        //        {
-
-        //        }
-        //        isDisposeCalled = true;
-        //    }
-        //    catch (NXOpen.NXException e)
-        //    {
-        //        UI.GetUI().NXMessageBox.Show("Message", NXMessageBox.DialogType.Error, e.Message);
-        //    }
-        //}
 
         public static int GetUnloadOption(string arg)
         {

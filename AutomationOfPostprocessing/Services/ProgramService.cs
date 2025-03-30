@@ -12,24 +12,53 @@ using NXOpen.Gateway;
 
 namespace AutomationOfPostprocessing.Services.CAM
 {
-    public class ProgramProcessor
+    public class ProgramService
     {
         private readonly Session _session;
         private readonly NXLogger _logger;
 
-        public ProgramProcessor(Session session, NXLogger logger)
+        public ProgramService(Session session, NXLogger logger)
         {
             _session = session;
             _logger = logger;
         }
 
+        public Dictionary<string, List<CAMObject>> CollectProgramData(NCGroup parent)
+        {
+            var programData = new Dictionary<string, List<CAMObject>>();
+
+            foreach (NCGroup group in _session.Parts.Work.CAMSetup.CAMGroupCollection)
+            {
+                if (group.GetParent() == parent)
+                {
+                    var operations = new List<CAMObject>();
+
+                    foreach (CAMObject member in group.GetMembers())
+                    {
+                        if (member is Operation)
+                        {
+                            operations.Add(member);
+                            _session.CAMSession.PathDisplay.ShowToolPath(member);
+                        }
+                    }
+
+                    if (operations.Count > 0)
+                    {
+                        programData.Add(group.Name, operations);
+                        _session.ListingWindow.WriteLine("Найдена программа: " + group.Name + " (" + operations.Count + " операций)");
+                    }
+                }
+            }
+            return programData;
+        }
+
         public void ProcessPrograms(Dictionary<string, List<CAMObject>> programData,
-                                          string outputDirectory, string postName)
+                                          string outputDirectory, string postName, string extention)
         {
             foreach (var prog in programData)
             {
                 string programName = prog.Key;
-                string outputFile = OutputManager.GenerateOutputFilename(outputDirectory, programName);
+                string outputFile = OutputManager.GenerateOutputFilename(outputDirectory, programName, extention);
                 CAMObject[] operations = prog.Value.ToArray();
 
                 _session.ListingWindow.WriteLine("\nОбработка программы: " + programName);
@@ -38,7 +67,7 @@ namespace AutomationOfPostprocessing.Services.CAM
                 {
                     bool allValid = operations.All(op =>
                     {
-                        var result = OperationValidator.ValidateBefore(op as Operation);
+                        var result = CAMValidator.ValidateBefore(op as Operation);
 
                         if (!result.IsSuccess && result.Message != null)
                             _session.ListingWindow.WriteLine(result.Message);
@@ -60,7 +89,7 @@ namespace AutomationOfPostprocessing.Services.CAM
                                                                             CAMSetup.PostprocessSettingsReviewTool.PostDefined,
                                                                             CAMSetup.PostprocessSettingsPostMode.Normal);
 
-                    var validationResult = OperationValidator.ValidateAfter(outputFile);
+                    var validationResult = CAMValidator.ValidateAfter(outputFile);
                     if (validationResult.IsSuccess)
                     {
                         _session.ListingWindow.WriteLine("УП успешно сохранен в: " + outputFile);
