@@ -8,11 +8,13 @@ namespace AutomationOfPostprocessing
     {
         private readonly IUserNotifier _notifier;
         private readonly string _logpath;
+        private const long MaxLogSize = 10 * 1024 * 1024;
 
         public NXLogger(IUserNotifier userNotifier)
         {
             _notifier = userNotifier;
             _logpath = @"D:\NX_Logs\journal_log.txt";
+            EnsureLogFileSize();
         }
 
         public void LogInfo(string message)
@@ -36,7 +38,40 @@ namespace AutomationOfPostprocessing
 
         private void LoggingIntoFile(string message)
         {
-            File.AppendAllText(_logpath, $"[{DateTime.Now}] - {message}" + Environment.NewLine);
+            try
+            {
+                File.AppendAllText(_logpath, $"[{DateTime.Now}] - {message}" + Environment.NewLine);
+            }
+            catch(Exception ex)
+            {
+                _notifier.ShowError($"Failed to write to log file: {ex.Message}");
+            }
+            
+        }
+
+        private void EnsureLogFileSize()
+        {
+            try
+            {
+                if(File.Exists(_logpath))
+                {
+                    FileInfo fileInfo = new FileInfo(_logpath);
+                    if (fileInfo.Length > MaxLogSize)
+                    {
+                        File.Delete(_logpath);
+                        File.WriteAllText(_logpath, $"[{DateTime.Now}] - Log file was rotated (size exceeded {MaxLogSize / 1024 / 1024} MB)\n");
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(_logpath);
+                    File.WriteAllText(_logpath, $"[{DateTime.Now}] - Log file was created\n");
+                }
+            }
+            catch(Exception ex)
+            {
+                _notifier.ShowError($"Failed to manage log file: {ex.Message}");
+            }
         }
     }
 }
