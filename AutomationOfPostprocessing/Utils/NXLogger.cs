@@ -13,7 +13,7 @@ namespace AutomationOfPostprocessing
         public NXLogger(IUserNotifier userNotifier)
         {
             _notifier = userNotifier;
-            _logpath = @"D:\NX_Logs\journal_log.txt";
+            _logpath = @"D:\KVZ\NX_Logs\journal_log.txt";
             EnsureLogFileSize();
         }
 
@@ -36,7 +36,7 @@ namespace AutomationOfPostprocessing
             //_notifier.ShowError(error);
         }
 
-        private void LoggingIntoFile(string message)
+        public void LoggingIntoFile(string message)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace AutomationOfPostprocessing
                 }
                 else
                 {
-                    Directory.CreateDirectory(_logpath);
+                    File.Create(_logpath).Close();
                     File.WriteAllText(_logpath, $"[{DateTime.Now}] - Log file was created\n");
                 }
             }

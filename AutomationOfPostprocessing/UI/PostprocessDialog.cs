@@ -45,25 +45,6 @@ public class PostprocessDialog
         }
     }
 
-    //public static void Init(Session theSession, UI theUI)
-    //{
-    //    PostprocessDialog postDialog = null;
-    //    try
-    //    {
-    //        postDialog = new PostprocessDialog(theSession, theUI);
-    //        postDialog.Launch();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        logger.LogError(ex);
-    //    }
-    //    finally
-    //    {
-    //        postDialog?.Dispose();
-    //    }
-        
-    //}
-
     public static void UnloadLibrary(string arg)
     {
         theDialog?.Dispose();
@@ -117,8 +98,7 @@ public class PostprocessDialog
             nativeFolderBrowser0 = (FolderSelection)theDialog.TopBlock.FindBlock("nativeFolderBrowser0");
             string0 = (StringBlock)theDialog.TopBlock.FindBlock("string0");
 
-            nativeFolderBrowser0.Path = @"D:\NC_PROGRAMS\";
-            string0.Value = "NC";
+            nativeFolderBrowser0.Path = @"C:\";
 
             theDialog.AddUpdateHandler(new BlockDialog.Update(update_cb));
 

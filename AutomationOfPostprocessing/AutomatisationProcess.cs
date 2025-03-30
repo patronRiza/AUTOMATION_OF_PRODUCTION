@@ -12,7 +12,6 @@ namespace AutomationOfPostprocessing
         private static DataValidator _validator;
         public static bool isDisposeCalled;
      
-
         public AutomatisationProcess()
         {
             try
@@ -35,6 +34,7 @@ namespace AutomationOfPostprocessing
             catch(Exception ex)
             {
                 _initializer.Logger.LogError(ex);
+                _initializer.Logger.LoggingIntoFile("\nEND --> AutomatisationProcess");
             }
         }
 
@@ -43,7 +43,7 @@ namespace AutomationOfPostprocessing
             try
             {
                 _theProgram = new AutomatisationProcess();
-
+                _initializer.Logger.LoggingIntoFile("\n\nSTART --> AutomatisationProcess\n");
                 var selectedParentGroup = _initializer.ParentGroupService.GetSelectGroup();
                 _validator.ValidateParentGroup(selectedParentGroup);
 
@@ -53,6 +53,7 @@ namespace AutomationOfPostprocessing
                 var programData = _initializer.ProgramService.CollectProgramData(selectedParentGroup);
 
                 _initializer.ProgramService.ProcessPrograms(programData, outputDir, postName, extention);
+                _initializer.Logger.LoggingIntoFile("\nEND --> AutomatisationProcess");
             }
             catch (Exception ex)
             {
