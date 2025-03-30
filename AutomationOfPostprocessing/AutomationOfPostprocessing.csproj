@@ -62,8 +62,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomatisationProcess.cs" />
-    <Compile Include="PostprocessDialog.cs" />
+    <Compile Include="Services\ComponentInitializer.cs" />
+    <Compile Include="UI\Interfaces\IUserNotifier.cs" />
+    <Compile Include="Services\ParentGroupService.cs" />
+    <Compile Include="Utils\CAMValidator.cs" />
+    <Compile Include="Services\ProgramService.cs" />
+    <Compile Include="Services\PostprocessorService.cs" />
+    <Compile Include="Utils\DataValidator.cs" />
+    <Compile Include="Utils\NXLogger.cs" />
+    <Compile Include="Utils\OutputManager.cs" />
+    <Compile Include="UI\PostprocessConfigurator.cs" />
+    <Compile Include="UI\PostprocessDialog.cs" />
+    <Compile Include="Utils\ProcessingResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\NXUserNotifier.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resourses\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
