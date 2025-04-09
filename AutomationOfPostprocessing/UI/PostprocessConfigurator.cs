@@ -19,8 +19,9 @@ namespace AutomationOfPostprocessing
         {
             try
             {
-                var result = _dialog.Launch();
-                if (result != BlockDialog.DialogResponse.Ok)
+                var result = _dialog.Show();
+                //if (result != BlockDialog.DialogResponse.Ok)
+                if (result != 0)
                 {
                     _logger.LogInfo("Постпроцессинг отменён пользователем");
                     return (false, null, null, null);
