@@ -9,11 +9,13 @@ namespace AutomationOfPostprocessing.Services.FileSystem
     {
         private readonly string _postDir;
         private string _configFile;
+        private string _actualPostsDir;
 
         public PostprocessorService()
         {
-            _postDir = Environment.GetEnvironmentVariable("UGII_CAM_POST_DIR");
-
+            //_postDir = Environment.GetEnvironmentVariable("UGII_CAM_POST_DIR");
+            _postDir = Environment.GetEnvironmentVariable("UGII_CAM_TEMPLATE_POST_DIR");
+            _actualPostsDir = Environment.GetEnvironmentVariable("UGII_CAM_INSTALLED_POSTS_DIR");
         }
 
         public List<string> GetAvailablePostprocessors()
@@ -24,8 +26,8 @@ namespace AutomationOfPostprocessing.Services.FileSystem
 
             try
             {
-                
-                foreach(string line in File.ReadLines(_configFile))
+
+                foreach (string line in File.ReadLines(_configFile))
                 {
                     if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
                     {
@@ -49,7 +51,7 @@ namespace AutomationOfPostprocessing.Services.FileSystem
         {
             if (string.IsNullOrWhiteSpace(postName))
                 throw new ArgumentException("Имя постпроцессора не может быть пустым", nameof(postName));
-            
+
             try
             {
                 string postFile = GetPostprocessorPaths(postName);
@@ -93,7 +95,8 @@ namespace AutomationOfPostprocessing.Services.FileSystem
                     string currentPostName = parts[0].Trim();
                     if (currentPostName.Equals(postName, StringComparison.OrdinalIgnoreCase))
                     {
-                        string path = parts[1].Trim().Replace("${UGII_CAM_POST_DIR}",_postDir);
+                        //string path = parts[1].Trim().Replace("${UGII_CAM_POST_DIR}", _postDir);
+                        string path = parts[1].Trim().Replace("${UGII_CAM_INSTALLED_POSTS_DIR}", _actualPostsDir + "/");
 
                         return path.Replace(".tcl", ".pui");
                     }

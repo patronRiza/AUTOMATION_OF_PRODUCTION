@@ -29,7 +29,8 @@ public class PostprocessDialog
             theUI = ui;
             PostprocessDialog.logger = logger;
             postprocessorSupplier = new PostprocessorService();
-            string ugiiUserDir = Environment.GetEnvironmentVariable("UGII_USER_DIR");
+            //string ugiiUserDir = Environment.GetEnvironmentVariable("UGII_USER_DIR");
+            string ugiiUserDir = Environment.GetEnvironmentVariable("UGII_CUSTOM_DIALOGS_DIR");
             string theDlxFileName = Path.Combine(ugiiUserDir, "application", "patroN.dlx");
             theDialog = theUI.CreateDialog(theDlxFileName);
             theDialog.AddApplyHandler(new BlockDialog.Apply(apply_cb));
@@ -62,19 +63,33 @@ public class PostprocessDialog
         //}
     }
 
-    public BlockDialog.DialogResponse Launch()
+    // public BlockDialog.DialogResponse Launch()
+    // {
+    //     BlockDialog.DialogResponse dialogResponse = BlockDialog.DialogResponse.Invalid;
+    //     try
+    //     {
+    //         dialogResponse = theDialog.Launch();
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         logger.LogError(ex);
+    //     }
+
+    //     return dialogResponse;
+    // }
+
+    public int Show()
     {
-        BlockDialog.DialogResponse dialogResponse = BlockDialog.DialogResponse.Invalid;
         try
         {
-            dialogResponse = theDialog.Launch();
+            theDialog.Show();
         }
         catch (Exception ex)
         {
             logger.LogError(ex);
+            return 1;
         }
-
-        return dialogResponse;
+        return 0;
     }
 
     public void Dispose()
