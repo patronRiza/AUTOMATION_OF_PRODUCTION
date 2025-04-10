@@ -14,7 +14,6 @@ namespace AutomationOfPostprocessing.Services.CAM
             if (operation == null)
                 return ProcessingResult.Skipped("Предупреждение: Обнаружена пустая операция");
             
-
             try
             {
                 var status = operation.GetStatus();

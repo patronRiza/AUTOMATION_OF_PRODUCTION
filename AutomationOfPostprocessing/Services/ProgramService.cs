@@ -101,6 +101,5 @@ namespace AutomationOfPostprocessing.Services.CAM
                 }
             }
         }
-
     }
 }

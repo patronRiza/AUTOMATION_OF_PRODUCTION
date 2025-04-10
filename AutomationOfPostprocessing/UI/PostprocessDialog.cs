@@ -29,7 +29,6 @@ public class PostprocessDialog
             theUI = ui;
             PostprocessDialog.logger = logger;
             postprocessorSupplier = new PostprocessorService();
-            //string ugiiUserDir = Environment.GetEnvironmentVariable("UGII_USER_DIR");
             string ugiiUserDir = Environment.GetEnvironmentVariable("UGII_CUSTOM_DIALOGS_DIR");
             string theDlxFileName = Path.Combine(ugiiUserDir, "application", "patroN.dlx");
             theDialog = theUI.CreateDialog(theDlxFileName);
@@ -49,34 +48,16 @@ public class PostprocessDialog
     public static void UnloadLibrary(string arg)
     {
         theDialog?.Dispose();
-        theDialog = null;
-        //try
-        //{
-        //    //---- Enter your code here -----
-        //    theSession = null;
-        //    theUI = null;
-        //}
-        //catch (Exception ex)
-        //{
-        //    //---- Enter your exception handling code here -----
-        //    theUI?.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
-        //}
+        try
+        {
+            theSession = null;
+            theUI = null;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex);
+        }
     }
-
-    // public BlockDialog.DialogResponse Launch()
-    // {
-    //     BlockDialog.DialogResponse dialogResponse = BlockDialog.DialogResponse.Invalid;
-    //     try
-    //     {
-    //         dialogResponse = theDialog.Launch();
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         logger.LogError(ex);
-    //     }
-
-    //     return dialogResponse;
-    // }
 
     public int Show()
     {
@@ -116,15 +97,6 @@ public class PostprocessDialog
             nativeFolderBrowser0.Path = @"C:\";
 
             theDialog.AddUpdateHandler(new BlockDialog.Update(update_cb));
-
-            //------------------------------------------------------------------------------
-            //Registration of ListBox specific callbacks
-            //------------------------------------------------------------------------------
-            //list_box0.SetAddHandler(new NXOpen.BlockStyler.ListBox.AddCallback(AddCallback));
-
-            //list_box0.SetDeleteHandler(new NXOpen.BlockStyler.ListBox.DeleteCallback(DeleteCallback));
-
-            //------------------------------------------------------------------------------
         }
         catch (Exception ex)
         {
@@ -206,10 +178,6 @@ public class PostprocessDialog
                     string0.Value = extention;
                 }
             }
-            else if (block == nativeFolderBrowser0)
-            {
-                //---------Enter your code here-----------
-            }
         }
         catch (Exception ex)
         {
@@ -232,26 +200,6 @@ public class PostprocessDialog
         }
         return errorCode;
     }
-    //------------------------------------------------------------------------------
-    //ListBox specific callbacks
-    //------------------------------------------------------------------------------
-    //public int  AddCallback (NXOpen.BlockStyler.ListBox list_box)
-    //{
-    //}
-
-    //public int  DeleteCallback(NXOpen.BlockStyler.ListBox list_box)
-    //{
-    //}
-
-    //------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------
-    //StringBlock specific callbacks
-    //------------------------------------------------------------------------------
-    //public void KeystrokeCallbackHandler(NXOpen.BlockStyler.StringBlock string_block, string uncommitted_value)
-    //{
-    //}
-
-    //------------------------------------------------------------------------------
 
     public PropertyList GetBlockProperties(string blockID)
     {
