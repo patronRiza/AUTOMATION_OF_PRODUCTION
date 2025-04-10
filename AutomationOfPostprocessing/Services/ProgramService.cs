@@ -92,7 +92,7 @@ namespace AutomationOfPostprocessing.Services.CAM
                     }
                     else
                         _session.ListingWindow.WriteLine(validationResult.Error.Message);
-                    
+
                 }
                 catch (Exception ex)
                 {

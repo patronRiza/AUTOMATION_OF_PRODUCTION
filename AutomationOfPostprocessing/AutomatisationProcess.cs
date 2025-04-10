@@ -11,7 +11,7 @@ namespace AutomationOfPostprocessing
         private static ComponentInitializer _initializer;
         private static DataValidator _validator;
         public static bool isDisposeCalled;
-     
+
         public AutomatisationProcess()
         {
             try
@@ -31,7 +31,7 @@ namespace AutomationOfPostprocessing
             {
                 AutomatisationProcess.Run();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _initializer.Logger.LogError(ex);
                 _initializer.Logger.LoggingIntoFile("\nEND --> AutomatisationProcess");
