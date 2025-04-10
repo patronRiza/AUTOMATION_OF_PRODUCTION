@@ -96,7 +96,7 @@ namespace AutomationOfPostprocessing.Services.FileSystem
                     if (currentPostName.Equals(postName, StringComparison.OrdinalIgnoreCase))
                     {
                         //string path = parts[1].Trim().Replace("${UGII_CAM_POST_DIR}", _postDir);
-                        string path = parts[1].Trim().Replace("${UGII_CAM_INSTALLED_POSTS_DIR}", _actualPostsDir + "/");
+                        string path = parts[1].Trim().Replace("${UGII_CAM_INSTALLED_POSTS_DIR}", _actualPostsDir);
 
                         return path.Replace(".tcl", ".pui");
                     }
