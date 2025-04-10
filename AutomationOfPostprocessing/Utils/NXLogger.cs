@@ -33,7 +33,6 @@ namespace AutomationOfPostprocessing
         {
             string error = $"ERROR: {ex.Message}\n{ex.StackTrace}";
             LoggingIntoFile(error);
-            //_notifier.ShowError(error);
         }
 
         public void LoggingIntoFile(string message)
@@ -46,7 +45,6 @@ namespace AutomationOfPostprocessing
             {
                 _notifier.ShowError($"Failed to write to log file: {ex.Message}");
             }
-            
         }
 
         private void EnsureLogFileSize()

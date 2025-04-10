@@ -68,15 +68,7 @@ namespace AutomationOfPostprocessing
 
         public static int GetUnloadOption(string arg)
         {
-
-            //Unloads the image explicitly, via an unload dialog
-            //return System.Convert. ToInt32(Session.LibraryUnloadOption. Explicitly);
-
-            //Unloads the image inmediately efter execution within NX
             return System.Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
-
-            //Unloads the image when the NX session terminates
-            //return System.Convert.ToInt32(Session.LibraryUnloadOption.AtTermination);
         }
     }
 }
